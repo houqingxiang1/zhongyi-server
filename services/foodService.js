@@ -44,7 +44,7 @@ const {
             where: {
               title: {
                 [Op.like]: `%${keyword}%`
-              }
+              },             
             }
         })
     }  
