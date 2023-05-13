@@ -14,6 +14,11 @@ module.exports = {
     const bodyTotal =  await BodyService.getTotal()
      const symptomTotal = await SymptomService.getTotal()
       const treatmentTotal = await TreatmentService.getTotal()
+      const jingluo = await JingluoService.getTotal()
+    const xuewei = await XueweiService.getTotal()
+    const reference =await ReferenceService.getTotal()
+    const treatment = await TreatmentService.getTotal()
+    const food = await foodService.getTotal()
       ctx.body = {
         status: 200,
         msg: '获取成功',
@@ -21,7 +26,12 @@ module.exports = {
             questionTotal,
             bodyTotal,
             symptomTotal,
-            treatmentTotal
+            treatmentTotal,
+            jingluo,
+            xuewei,
+            reference,
+            treatment,
+            food
         }
       
     }
