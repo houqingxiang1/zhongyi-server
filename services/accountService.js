@@ -30,16 +30,11 @@ class AccountService {
     return Account.create(account)
   }
   
-  async getAccountList(params) {
+  async getAccountList() {
     return Account.findAndCountAll({
-      attributes: { exclude: ['password'] },
-      include: {
-        model: Role
-      },
-      limit: parseInt(params.pagesize),
-      // 跳过实例数目
-      offset: (params.pagenum - 1) * parseInt(params.pagesize)
+      attributes: { exclude: ['password'] }     
     })
+    
   }
   
   async getAccountListByDate() {

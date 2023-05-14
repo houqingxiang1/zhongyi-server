@@ -30,7 +30,7 @@ module.exports = {
       // roleName.push(roleInfo[0].dataValues.aw_role.dataValues.name)
       const userInfo = {
         id: count[0].dataValues.id,
-        // roles: roleName,
+        // role_id: count[0].role_id,
         name: count[0].dataValues.username,
         avatar: count[0].dataValues.avatar,
       }
@@ -43,7 +43,8 @@ module.exports = {
           msg: '登录成功',
           data: {
             username,
-            token
+            token,
+            role_id: count[0]?.role_id || 3
           }
         }
       } else {
@@ -67,7 +68,7 @@ module.exports = {
       data: null
     }
   },
-  // 注册、添加用户
+  // 注册、添加用户  
   addAccount: async (ctx) => {
     const accountObj = ctx.request.body
     if (!accountObj.role_id) {
@@ -98,11 +99,11 @@ module.exports = {
   },
   
   getAccountList: async ctx => {
-    const params = ctx.query
+    
     const {
       count,
       rows
-    } = await AccountService.getAccountList(params)
+    } = await AccountService.getAccountList()
     if (count > 0) {
       const accountList = []
       for (let i = 0; i < rows.length; i++) {
@@ -185,48 +186,22 @@ module.exports = {
   },
   // 删除
   deleteAccount: async (ctx) => {
-    const accountId = ctx.url.substring(22)
-    const count = await AccountService.getAccountById(accountId)
-    let token = ctx.request.headers['authorization']
-    const tokenInfo = await varifyToken(token)
-    // console.log(tokenInfo)
-    const userInfo = tokenInfo.userInfo
-    // console.log(userInfo.id)
-    // console.log(count[0].dataValues.id)
-    // console.log(accountId)
-    if (count.length > 0) {
-      if (parseInt(userInfo.id) === parseInt(count[0].dataValues.id)) {
-        ctx.body = {
-          status: 1000,
-          msg: '不可删除自己',
-          data: null
-        }
-      } else if (parseInt(accountId) === 1) {
-        ctx.body = {
-          status: 1000,
-          msg: '超级管理员不可被删除',
-          data: null
-        }
-      } else {
-        const result = await AccountService.deleteAccount(accountId)
-        if (result === 1) {
-          ctx.body = {
-            status: 200,
-            msg: '删除成功',
-          }
-        } else {
-          ctx.body = {
-            status: 'error',
-            msg: '删除失败',
-          }
-        }
+    const params = ctx.params
+    const result = await AccountService.deleteAccount(params.id)
+    if (result === 1) {
+      ctx.body = {
+        status: 200,
+        msg: '删除成功',
+        data: null
       }
     } else {
       ctx.body = {
         status: 'error',
-        msg: '此id用户不存在',
+        msg: '删除失败',
+        data: null
       }
     }
+    
   },
   // 获取用户信息，在 token 中携带
   getAccountInfo: async (ctx) => {
